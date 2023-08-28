@@ -12,8 +12,8 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # Create folder for storing file with data
 def create_data_folder(folder_name):
-    parent_directory = os.path.dirname(os.path.dirname(__file__))
-    data_dir = os.path.join(parent_directory, folder_name)
+    parent_directory_path = os.path.dirname(os.path.dirname(__file__))
+    data_dir = os.path.join(parent_directory_path, folder_name)
     os.makedirs(data_dir, exist_ok=True)
 
 
