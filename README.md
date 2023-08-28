@@ -18,6 +18,8 @@ STEPS:
 
 3. Install the required packages using the requirements.txt file:
 
-pip install -r requirements.txt
+   pip install -r requirements.txt
 
 4. Run the main script or module using the installed virtual environment.
+
+   py rpa_challenge_automation.py
