@@ -8,16 +8,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+NUMBER_OF_RECORDS = 10
+
 
 # Open the website and download the Excel file
-def download_excel(driver, website, download_text, file_name, data_folder):
+def download_excel(driver, website, download_text, f_name):
     driver.get(website)
     download_link = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable(
             (By.XPATH, f'//a[contains(text(), "{download_text}")]')
         )
     )
-    f_name = f"./{data_folder}/{file_name}"
     if os.path.exists(f_name):
         os.remove(f_name)
     download_link.click()
@@ -35,17 +36,16 @@ def download_excel(driver, website, download_text, file_name, data_folder):
 
 
 # Load the Excel workbook and process data
-def process_excel_data(file_name, data_folder):
-    f_name = f"./{data_folder}/{file_name}"
+def process_excel_data(f_name):
     workbook = openpyxl.load_workbook(f_name)
     sheet = workbook.active
-    props = [str(cell.value).strip() for cell in sheet[1] if cell.value]
     persons_list = []
     for row_index, row in enumerate(sheet.iter_rows(), start=1):
-        if row_index == 1:
-            continue
-        if row_index > 11:
+        if row_index > NUMBER_OF_RECORDS + 1:
             break
         row_data = [str(cell.value).strip() for cell in row if cell.value]
+        if row_index == 1:
+            props = row_data
+            continue
         persons_list.append(Person(props, row_data))
     return persons_list
