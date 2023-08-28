@@ -3,41 +3,48 @@ import sys
 import time
 import openpyxl
 from .person import Person
+from .constants import NUMBER_OF_RECORDS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-NUMBER_OF_RECORDS = 10
+
+# Create folder for storing file with data
+def create_data_folder(folder_name):
+    parent_directory = os.path.dirname(os.path.dirname(__file__))
+    data_dir = os.path.join(parent_directory, folder_name)
+    os.makedirs(data_dir, exist_ok=True)
 
 
 # Open the website and download the Excel file
-def download_excel(driver, website, download_text, f_name):
+def download_excel(driver, website, download_text, file_name):
     driver.get(website)
     download_link = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable(
             (By.XPATH, f'//a[contains(text(), "{download_text}")]')
         )
     )
-    if os.path.exists(f_name):
-        os.remove(f_name)
+    if os.path.exists(file_name):
+        os.remove(file_name)
     download_link.click()
     timeout = 10
     start_time = time.time()
-    while not os.path.exists(f_name):
+    while not os.path.exists(file_name):
         if time.time() - start_time > timeout:
             print("Timeout: File download took too long. Bye...")
             sys.exit(1)
         time.sleep(0.5)
     prev_size = 0
-    while os.path.getsize(f_name) > prev_size:
-        prev_size = os.path.getsize(f_name)
+    while os.path.getsize(file_name) > prev_size:
+        time.sleep(0.5)
+        prev_size = os.path.getsize(file_name)
     print("Download complete. Starting web interactions")
 
 
 # Load the Excel workbook and process data
-def process_excel_data(f_name):
-    workbook = openpyxl.load_workbook(f_name)
+def process_excel_data(file_name):
+    workbook = openpyxl.load_workbook(file_name)
     sheet = workbook.active
     persons_list = []
     for row_index, row in enumerate(sheet.iter_rows(), start=1):

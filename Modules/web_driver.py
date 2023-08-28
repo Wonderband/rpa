@@ -17,6 +17,11 @@ def is_firefox_installed():
     return "firefox" in webdriver.__dict__
 
 
+def set_default_dir(folder):
+    parent_directory_path = os.path.dirname(os.path.dirname(__file__))
+    return parent_directory_path + f"\{folder}"
+
+
 # Set up Chrome WebDriver with custom download options
 def setup_chrome_driver(data_folder):
     chrome_options = ChromeOptions()
@@ -46,8 +51,7 @@ def setup_firefox_driver(data_folder):
 
 
 def setup(folder):
-    parent_directory_path = os.path.dirname(os.path.dirname(__file__))
-    data_folder = parent_directory_path + f"\{folder}"
+    data_folder = set_default_dir(folder)
     if is_chrome_installed():
         print("We'll work on Chrome!")
         return setup_chrome_driver(data_folder)
